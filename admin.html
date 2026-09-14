@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Kazemi AI Agency</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <span class="brand"><span class="brand-mark">K</span>Admin panel</span>
+    <div class="nav-cta">
+      <a href="index.html" class="btn btn-outline btn-sm">View site</a>
+      <a href="login.html" class="btn btn-primary btn-sm">Log out</a>
+    </div>
+  </div>
+</header>
+
+<div class="admin-layout">
+  <aside class="admin-side">
+    <div class="brand" style="font-size:1rem;"><span class="brand-mark">K</span>Kazemi AI</div>
+    <div class="admin-tab active" data-tab="articles">Articles</div>
+    <div class="admin-tab" data-tab="orders">Orders</div>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- ========== ARTICLES ========== -->
+    <section class="admin-panel active" id="panel-articles">
+      <div class="admin-toolbar">
+        <h2 style="margin:0;">Articles</h2>
+        <button class="btn btn-primary btn-sm" id="newArticleBtn">+ New article</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>Title</th><th>Tag</th><th>Date</th><th>Status</th><th></th></tr></thead>
+        <tbody id="articlesBody"></tbody>
+      </table>
+    </section>
+
+    <!-- ========== ORDERS ========== -->
+    <section class="admin-panel" id="panel-orders">
+      <div class="admin-toolbar">
+        <h2 style="margin:0;">Orders</h2>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>Client</th><th>Package</th><th>Amount</th><th>Coin</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<!-- article editor modal -->
+<div class="modal-backdrop" id="articleModal">
+  <div class="modal">
+    <h3 id="modalTitle" style="margin-bottom:16px;">New article</h3>
+    <input type="hidden" id="articleId">
+    <div class="form-field"><label>Title</label><input type="text" id="fTitle"></div>
+    <div class="form-field"><label>Tag</label><input type="text" id="fTag" placeholder="SEO, Design, Payments…"></div>
+    <div class="form-field"><label>Body</label><textarea id="fBody" rows="6"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn btn-primary" id="saveArticleBtn">Save</button>
+      <button class="btn btn-outline" id="cancelArticleBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+// ---------------------------------------------------------------------
+// Demo persistence via localStorage — this makes the panel fully usable
+// while you build, but it only stores data in THIS browser. For a real
+// multi-user admin (data shared across devices/staff) you need a small
+// backend: an API + database (Postgres/Firestore) behind auth, with this
+// UI calling it instead of localStorage. Swap the load/save functions
+// below for fetch() calls once that exists.
+// ---------------------------------------------------------------------
+const seedArticles = [
+  { id:1, title:'Why your corporate site needs more than a homepage', tag:'SEO', date:'Aug 2026', status:'Published' },
+  { id:2, title:'What a $100, $200 and $300 website actually includes', tag:'Design', date:'Jul 2026', status:'Published' },
+  { id:3, title:'Paying for services in crypto: a short guide for clients', tag:'Payments', date:'Jun 2026', status:'Published' },
+];
+const seedOrders = [
+  { client:'Nima Legal', package:'Starter', amount:'$100', coin:'USDT', date:'Jun 3, 2026', status:'Live' },
+  { client:'Arka Freight', package:'Business', amount:'$200', coin:'BTC', date:'Aug 12, 2026', status:'Live' },
+  { client:'Farsight Analytics', package:'SEO & Content', amount:'$1,200', coin:'ETH', date:'Aug 20, 2026', status:'In progress' },
+];
+function load(key, seed){ const s = localStorage.getItem(key); return s ? JSON.parse(s) : seed; }
+function save(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
+
+let articles = load('admin_articles', seedArticles);
+let orders = load('admin_orders', seedOrders);
+
+// ---------- tabs ----------
+document.querySelectorAll('.admin-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- articles table ----------
+function renderArticles(){
+  document.getElementById('articlesBody').innerHTML = articles.map(a => `
+    <tr>
+      <td>${a.title}</td>
+      <td><span class="work-tag">${a.tag}</span></td>
+      <td>${a.date}</td>
+      <td>${a.status}</td>
+      <td style="display:flex;gap:10px;">
+        <button class="link-btn" onclick="editArticle(${a.id})">Edit</button>
+        <button class="link-btn danger" onclick="deleteArticle(${a.id})">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+function openArticleModal(){ document.getElementById('articleModal').classList.add('open'); }
+function closeArticleModal(){ document.getElementById('articleModal').classList.remove('open'); }
+document.getElementById('newArticleBtn').addEventListener('click', () => {
+  document.getElementById('modalTitle').textContent = 'New article';
+  document.getElementById('articleId').value = '';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fTag').value = '';
+  document.getElementById('fBody').value = '';
+  openArticleModal();
+});
+document.getElementById('cancelArticleBtn').addEventListener('click', closeArticleModal);
+document.getElementById('saveArticleBtn').addEventListener('click', () => {
+  const id = document.getElementById('articleId').value;
+  const title = document.getElementById('fTitle').value.trim();
+  const tag = document.getElementById('fTag').value.trim() || 'General';
+  if (!title) return;
+  if (id) {
+    const a = articles.find(x => x.id == id);
+    a.title = title; a.tag = tag;
+  } else {
+    articles.push({ id: Date.now(), title, tag, date: 'Draft', status: 'Draft' });
+  }
+  save('admin_articles', articles);
+  renderArticles();
+  closeArticleModal();
+});
+function editArticle(id){
+  const a = articles.find(x => x.id === id);
+  document.getElementById('modalTitle').textContent = 'Edit article';
+  document.getElementById('articleId').value = a.id;
+  document.getElementById('fTitle').value = a.title;
+  document.getElementById('fTag').value = a.tag;
+  document.getElementById('fBody').value = a.body || '';
+  openArticleModal();
+}
+function deleteArticle(id){
+  if (!confirm('Delete this article?')) return;
+  articles = articles.filter(x => x.id !== id);
+  save('admin_articles', articles);
+  renderArticles();
+}
+
+// ---------- orders table ----------
+function renderOrders(){
+  document.getElementById('ordersBody').innerHTML = orders.map((o,i) => `
+    <tr>
+      <td>${o.client}</td>
+      <td>${o.package}</td>
+      <td>${o.amount}</td>
+      <td>${o.coin}</td>
+      <td>${o.date}</td>
+      <td>
+        <select onchange="updateOrderStatus(${i}, this.value)">
+          ${['Awaiting payment','In progress','Live','Cancelled'].map(s => `<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>`).join('');
+}
+function updateOrderStatus(i, status){
+  orders[i].status = status;
+  save('admin_orders', orders);
+}
+
+renderArticles();
+renderOrders();
+</script>
+</body>
+</html>
