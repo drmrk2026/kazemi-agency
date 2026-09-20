@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Kazemi AI Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="preloader" id="preloader"><span class="preloader-word">Kazemi AI Agency</span></div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand"><span class="brand-mark">K</span>Kazemi AI Agency</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="shop.html">Shop</a>
+      <a href="blog.html">Blog</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="nav-cta"><a href="login.html" class="btn btn-outline btn-sm">Log out</a></div>
+    <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="section--tight">
+  <div class="container">
+    <span class="eyebrow">Client dashboard</span>
+    <h1 style="max-width:20ch;">Welcome back</h1>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="container dash-layout">
+    <aside class="dash-side">
+      <a href="#" class="active">Overview</a>
+      <a href="#">My orders</a>
+      <a href="#">SEO package</a>
+      <a href="#">Invoices</a>
+      <a href="#">Account settings</a>
+      <a href="login.html">Log out</a>
+    </aside>
+    <div>
+      <div class="grid grid-3" style="margin-bottom:32px;">
+        <div class="dash-stat"><strong>2</strong><span style="color:var(--muted);font-size:0.85rem;">Active orders</span></div>
+        <div class="dash-stat"><strong>1</strong><span style="color:var(--muted);font-size:0.85rem;">Site live</span></div>
+        <div class="dash-stat"><strong>$500</strong><span style="color:var(--muted);font-size:0.85rem;">Total spent</span></div>
+      </div>
+
+      <h3 style="margin-bottom:12px;">Orders</h3>
+      <table class="orders">
+        <thead><tr><th>Package</th><th>Ordered</th><th>Status</th><th>Amount</th></tr></thead>
+        <tbody>
+          <tr><td>Business — corporate site</td><td>Aug 12, 2026</td><td><span class="status-pill status-live">Live</span></td><td>$200</td></tr>
+          <tr><td>SEO & Content (yearly)</td><td>Aug 20, 2026</td><td><span class="status-pill status-progress">In progress</span></td><td>$1,200</td></tr>
+          <tr><td>Starter — landing page</td><td>Jun 3, 2026</td><td><span class="status-pill status-live">Live</span></td><td>$100</td></tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:32px;">
+        <a href="shop.html" class="btn btn-primary">Start a new order</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© <span data-year></span> Kazemi AI Agency. All rights reserved.</span>
+      <span>Payments accepted in crypto only</span>
+    </div>
+  </div>
+</footer>
+
+<button class="chat-toggle" id="chatToggle" aria-label="Open AI assistant">✦</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head"><span>Ask Kazemi AI</span><button aria-label="Close">✕</button></div>
+  <div class="chat-body"><div class="chat-msg bot">Hi! I can help with pricing, packages, payment or login questions. What do you need?</div></div>
+  <div class="chat-suggest"><button>Pricing</button><button>Payment methods</button><button>Delivery time</button></div>
+  <div class="chat-input-row"><input type="text" placeholder="Type a question…"><button aria-label="Send">→</button></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/motion.js"></script>
+</body>
+</html>
